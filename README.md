@@ -14,4 +14,4 @@
 * 初始化工程
     1. 创建并进入新的工程目录 **mkdir myNewProject && cd myNewProject **
     2. 使用bid命令初始化工程目录 bid init
-        * bid init会自动在为当前目录安装相关依赖，如果安装依赖时出现问题，请移除工程目录下的node_modules文件夹，并使用bid update命令手动进行安装。update命令具体使用方法请看下文。
+        * bid init会自动在为当前目录安装相关依赖，如果安装依赖时出现问题，请移除工程目录下的node_modules文件夹，并使用bid update命令手动进行安装。update命令具体使用方法请看下文。s
