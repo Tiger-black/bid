@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "bud": "bin/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Tiger-black/bid.git"
@@ -18,5 +21,25 @@
   "bugs": {
     "url": "https://github.com/Tiger-black/bid/issues"
   },
-  "homepage": "https://github.com/Tiger-black/bid#readme"
+  "homepage": "https://github.com/Tiger-black/bid#readme",
+  "dependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "cli-color": "^1.2.0",
+    "co": "^4.6.0",
+    "commander": "^2.15.1",
+    "css-loader": "^0.28.11",
+    "ejs-loader": "^0.3.1",
+    "express": "^4.16.3",
+    "fs-extra": "^6.0.1",
+    "git-tools": "^0.3.0",
+    "inquirer": "^6.0.0",
+    "less-loader": "^4.1.0",
+    "less-middleware": "^3.0.1",
+    "rx": "^4.1.0",
+    "shelljs": "^0.8.2",
+    "thunkify": "^2.1.2",
+    "webpack": "^1.12.15",
+    "webpack-dev-middleware": "^1.6.1"
+  }
 }

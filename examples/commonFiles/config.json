@@ -1,0 +1,11 @@
+{
+	"appName": "",
+	"remotes": "",
+	"version": "",
+	"cdnhost": "",
+	"websiteHost": "",
+	"alias": {
+		"zepto": "webpack-zepto"
+	},
+	"noParse": []
+}
