@@ -3,7 +3,7 @@
  * @Author: xiaohu 
  * @Date: 2018-06-21 12:00:35 
  * @Last Modified by: xiaohu.li
- * @Last Modified time: 2018-06-23 14:49:51
+ * @Last Modified time: 2018-06-23 15:37:04
  */
 
 require('shelljs/global');//nodejs中使用shelljs模块的exec方法执行shell脚本命令
@@ -69,8 +69,8 @@ program
 	}).on('--help', function() {
 		console.log('  举个栗子:');
 		console.log('');
-		console.log('    bid dev,开启本地开发者模式');
-		console.log('    bid dev -p|--port [端口号]   :   指定端口号');
+		console.log('    bud dev,开启本地开发者模式');
+		console.log('    bud dev -p|--port [端口号]   :   指定端口号');
 		console.log('');
 		process.exit(1);
 	});
@@ -103,7 +103,7 @@ program
     }).on('--help', function() {
 		console.log('  举个栗子:');
 		console.log('');
-		console.log('    bid init     ,   在当前路径下初始化[通用]工程目录');
+		console.log('    bud init     ,   在当前路径下初始化[通用]工程目录');
 		console.log('');
 		process.exit(1);
     });
@@ -265,7 +265,7 @@ program
 	}).on('--help', function() {
 		console.log('  举个栗子:');
 		console.log('');
-		console.log('bid deploy');
+		console.log('bud deploy');
 		console.log('');
 		process.exit(1);
 	});
@@ -294,8 +294,8 @@ program
 	}).on('--help', function() {
 		console.log('  举个栗子:');
 		console.log('');
-		console.log('    bid update  (-q|--quiet) ,   更新bid全局依赖模块(开启安静模式，默认"非安静模式")');
-		console.log('    bid update -f [模块名],   强制重新安装bid指定依赖模块');
+		console.log('    bud update  (-q|--quiet) ,   更新bud全局依赖模块(开启安静模式，默认"非安静模式")');
+		console.log('    bud update -f [模块名],   强制重新安装bud指定依赖模块');
 		console.log('');
 		process.exit(1);
 	});

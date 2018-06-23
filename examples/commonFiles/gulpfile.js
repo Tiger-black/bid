@@ -58,7 +58,7 @@ if (env === 'production' || env === 'production-build') {
 		console.log(errorRed('您选择的构建环境异常！构建结束。'));
 	}
 }
-var webpackConfig = require('/usr/local/lib/node_modules/yl-bid/webpack/production.config')(buildConfig.jsBuildPath);
+var webpackConfig = require('/usr/local/lib/node_modules/yl-bud/webpack/production.config')(buildConfig.jsBuildPath);
 
 var startTime = new Date().getTime();
 
@@ -74,7 +74,7 @@ gulp.task('init', function(callback) {
 			var newJsEntry = JSON.stringify(buildInfos.jsEntry).replace(/\@version/g, buildInfos.version)
 			webpackConfig.entry = JSON.parse(newJsEntry);
 		} catch (e) {
-			throw new Error(errorRed('发布失败：config["bid-js-entry"]解析@version发生错误。'));
+			throw new Error(errorRed('发布失败：config["bud-js-entry"]解析@version发生错误。'));
 		}
 	} else {
 		throw new Error(errorRed('发布失败：config.json中version字段异常或您当前的git环境存在异常。'));

@@ -1,8 +1,8 @@
 {
-  "name": "yl-bid",
-  "version": "1.0.1",
-  "description": "一览科技开发工具",
-  "main": "index.js",
+  "name": "yilan-bud",
+  "version": "0.0.1",
+  "description": "一览科技前端开发工具",
+  "main": "bin/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,7 +14,7 @@
     "url": "git+https://github.com/Tiger-black/bid.git"
   },
   "keywords": [
-    "前端工程化"
+    "前端工程化","前端脚手架"
   ],
   "author": "lixiaohu",
   "license": "ISC",
