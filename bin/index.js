@@ -3,7 +3,7 @@
  * @Author: xiaohu 
  * @Date: 2018-06-21 12:00:35 
  * @Last Modified by: xiaohu.li
- * @Last Modified time: 2018-06-22 11:16:05
+ * @Last Modified time: 2018-06-23 14:49:51
  */
 
 require('shelljs/global');//nodejs中使用shelljs模块的exec方法执行shell脚本命令
@@ -193,6 +193,7 @@ program
 					}
 
 					try {
+						console.log('gulp deploy --entry ' + filename + ' --env daily')
 						yield execThunk('gulp deploy --entry ' + filename + ' --env daily'); // 在本地进行build
 					} catch (e) {
 						console.log(colors.red('本地线上构建失败！'));
@@ -271,11 +272,44 @@ program
 
 
 program
+	.command('update')
+	.alias('u')
+	.description('更新工程构建所需要的依赖模块')
+	.action(function(cmd, options) {
+		console.log(colors.blue('开始更新工程构建所需要的依赖模块...'));
+		var initTime = new Date().getTime();
+		var dirname = path.join(process.cwd(), './');
+		utils.fileGenerator.dependenciesGenerator({ // 复制依赖文件Node_modules
+			'dirname': dirname
+		}, function(error) {
+			var nowTime = new Date().getTime();
+			if (!error) {
+				console.log(colors.green('依赖更新完成!'), colors.blue('共耗时:' + (nowTime - initTime) / 1000, 's'));
+			} else {
+				console.log(colors.red('拷贝依赖文件失败!'), colors.blue('共耗时:' + (nowTime - initTime) / 1000, 's'));
+				console.log(colors.red(error));
+			}
+		});
+
+	}).on('--help', function() {
+		console.log('  举个栗子:');
+		console.log('');
+		console.log('    bid update  (-q|--quiet) ,   更新bid全局依赖模块(开启安静模式，默认"非安静模式")');
+		console.log('    bid update -f [模块名],   强制重新安装bid指定依赖模块');
+		console.log('');
+		process.exit(1);
+	});
+
+
+
+
+program
 	.command('help')
 	.alias('h')
 	.description('帮助')
 	.action(function(cmd, options) {
         console.log('初始化 bud init');
+        console.log('启服务 bud dev 改端口号 -pxxxx');
         console.log('构建 bud build');
     })
 

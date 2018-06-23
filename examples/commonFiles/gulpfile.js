@@ -40,7 +40,7 @@ var deployTask = []; // gulp 任务序列
 if (env === 'production' || env === 'production-build') {
 	//【仅构建和发布html】或【仅进行线上构建不发布】 线上构建，由于线上使用cdn，需要剥离html和js,发布线上
 	deployTask = ['init', 'clean', 'buildLess', 'buildhtml'];
-	buildConfig.htmlBuildPath = './deploy/build/';
+	buildConfig.htmlBuildPath = './deploy/html/build/';
 } else if (env === 'tag') {
 	//【仅构建和发布js文件】 由git hock触发，全量build发布构建js文件到线上,并且将使用cdn地址的html发布到预发环境
 	deployTask = ['init', 'clean', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];
@@ -58,7 +58,7 @@ if (env === 'production' || env === 'production-build') {
 		console.log(errorRed('您选择的构建环境异常！构建结束。'));
 	}
 }
-var webpackConfig = require('br-bid/webpack/production.config')(buildConfig.jsBuildPath);
+var webpackConfig = require('/usr/local/lib/node_modules/yl-bid/webpack/production.config')(buildConfig.jsBuildPath);
 
 var startTime = new Date().getTime();
 
@@ -160,13 +160,13 @@ gulp.task('minify-js-lint', ['webpack-lint'], function() { // lint打包完成�
 gulp.task('buildLess', function(callback) {
 	//编译src目录下的所有less文件
 	console.log(infoBlue('正在编译Less...'));
-	return gulp.src('./src/**/**/*.less')
+	gulp.src('./src/**/**/*.less')
 		.pipe(less())
 		.pipe(gulp.dest('./src/'));
-	// setTimeout(function() { // 解决css没有生成就进行callback的问题
-	// 	console.log(infoBlue('编译Less结束...'));
-	// 	callback();
-	// }, 3000);
+	setTimeout(function() { // 解决css没有生成就进行callback的问题
+		console.log(infoBlue('编译Less结束...'));
+		callback();
+	}, 3000);
 });
 
 gulp.task('buildhtml', ['init', 'clean', 'buildLess'], function(callback) { // 压缩html并迁移至相对目录
@@ -175,7 +175,7 @@ gulp.task('buildhtml', ['init', 'clean', 'buildLess'], function(callback) { // �
 	// return gulp.src('./src/p/**/*.html')
 	var htmlSrc = buildInfos && buildInfos && buildInfos.htmlEntry && buildInfos.htmlEntry.length ? buildInfos.htmlEntry : './src/p/**/*.html';
 	// 如果htmlEntry为空数组，则迁移全部html
-	if (env === 'production' || env === 'production-build') { // 如果是发布线上，则使用CDN路径替换js引用
+	if (env === 'production') { // 如果是发布线上，则使用CDN路径替换js引用
 		gulp.src(htmlSrc, {
 				base: './src/p'
 			})

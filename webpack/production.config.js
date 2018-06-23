@@ -5,6 +5,7 @@ var utils = require('../lib/utils');
 var alias = utils.webpack.alias;
 var noParse = utils.webpack.noParse; // 忽略查找出现在其中的js所引入的依赖
 
+
 module.exports = function(outputPath) {
 	var output = outputPath ? outputPath : './build';
 	return {
