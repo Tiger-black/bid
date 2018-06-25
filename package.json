@@ -1,6 +1,6 @@
 {
-  "name": "yl-bid",
-  "version": "1.0.3",
+  "name": "yl-bud",
+  "version": "0.0.1",
   "description": "一览科技前端开发工具",
   "main": "bin/index.js",
   "scripts": {
