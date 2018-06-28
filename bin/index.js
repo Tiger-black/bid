@@ -3,7 +3,7 @@
  * @Author: xiaohu 
  * @Date: 2018-06-21 12:00:35 
  * @Last Modified by: xiaohu.li
- * @Last Modified time: 2018-06-23 15:37:04
+ * @Last Modified time: 2018-06-28 15:54:39
  */
 
 require('shelljs/global');//nodejs中使用shelljs模块的exec方法执行shell脚本命令
@@ -160,7 +160,7 @@ program
 
 				answers.selectedEntry.forEach(function(se, index) { // 生成发布列表，构建列表
 					for (var htmlKey in BUILDINFOS.autoGetHtml.jsEntry) {
-						console.log(htmlKey)
+						// console.log(htmlKey)
 						if (htmlKey.split(se).length > 1) {
 							var tmpSrc = './' + htmlKey + '.html';
 							if (configure.version) {
