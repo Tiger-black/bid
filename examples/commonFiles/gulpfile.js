@@ -39,14 +39,19 @@ var deployTask = []; // gulp 任务序列
 
 if (env === 'production' || env === 'production-build') {
 	//【仅构建和发布html】或【仅进行线上构建不发布】 线上构建，由于线上使用cdn，需要剥离html和js,发布线上
-	deployTask = ['init', 'clean', 'buildLess', 'buildhtml'];
-	buildConfig.htmlBuildPath = './deploy/html/build/';
+	deployTask = ['init','cleanHtml', 'buildLess', 'buildhtml'];
+	buildConfig.htmlBuildPath = './build/';
 } else if (env === 'tag') {
 	//【仅构建和发布js文件】 由git hock触发，全量build发布构建js文件到线上,并且将使用cdn地址的html发布到预发环境
 	deployTask = ['init', 'clean', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];
 	buildConfig.jsBuildPath = './deploy/javascripts/build/';
 	buildConfig.htmlBuildPath = './deploy/html/build/';
-} else if (env === 'daily' || env === 'pre') {
+}  else if (env === 'pre') {
+	//预发发布时js和html分开
+	deployTask = ['init', 'clean', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];
+	buildConfig.jsBuildPath = './deploy/javascripts/build/';
+	buildConfig.htmlBuildPath = './deploy/html/build/';
+} else if (env === 'daily') {
 	//【构建全部html及js文件】 日常、预发构建 构建后js、html路径一致
 	deployTask = ['init', 'clean', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];;
 	buildConfig.jsBuildPath = './deploy/build/';
@@ -84,6 +89,21 @@ gulp.task('init', function(callback) {
 
 gulp.task('clean', function(cb) { // 重置build目录
 	var buildPath = path.join(process.cwd(), './deploy');
+	fs.exists(buildPath, function(exists) {
+		if (exists) {
+			del.sync([buildPath]);
+			console.log(infoBlue('正在重建build目录...'))
+			cb();
+		} else {
+			console.log(infoBlue('未找到build文件夹...'))
+			cb();
+		}
+	});
+});
+
+
+gulp.task('cleanHtml', function(cb) { // 重置build目录
+	var buildPath = path.join(process.cwd(), './build');
 	fs.exists(buildPath, function(exists) {
 		if (exists) {
 			del.sync([buildPath]);
@@ -191,8 +211,8 @@ gulp.task('buildhtml', ['init', 'clean', 'buildLess'], function(callback) { // �
 			.pipe(htmlmin({
 				collapseWhitespace: true
 			}))
-			.pipe(gulp.dest(buildConfig.htmlBuildPath + 'src/p/'));
-	} else if (env === 'tag') { // git_hooks触发js发布，
+			.pipe(gulp.dest(buildConfig.htmlBuildPath));
+	} else if (env === 'tag' || env === 'pre') { // git_hooks触发js发布，
 		gulp.src(htmlSrc, {
 				base: './src/p'
 			})
@@ -209,8 +229,8 @@ gulp.task('buildhtml', ['init', 'clean', 'buildLess'], function(callback) { // �
 			.pipe(htmlmin({
 				collapseWhitespace: true
 			}))
-			.pipe(gulp.dest(buildConfig.htmlBuildPath + 'src/p/'));
-	} else { // 发布日常、预发，则按照相对路径替换js引用路径
+			.pipe(gulp.dest(buildConfig.htmlBuildPath));
+	} else { // 发布日常则按照相对路径替换js引用路径
 		gulp.src(htmlSrc, {
 				base: './src/p'
 			})

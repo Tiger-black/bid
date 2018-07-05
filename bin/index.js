@@ -3,13 +3,14 @@
  * @Author: xiaohu 
  * @Date: 2018-06-21 12:00:35 
  * @Last Modified by: xiaohu.li
- * @Last Modified time: 2018-06-28 15:54:39
+ * @Last Modified time: 2018-07-05 15:43:58
  */
 
 require('shelljs/global');//nodejs中使用shelljs模块的exec方法执行shell脚本命令
 const fs = require('fs');
 const path = require('path');
 const co = require('co');//Generator 自驱动的流程处理库
+var OSS = require('ali-oss');
 const program = require('commander')//命令行处理框架
 const thunkify = require('thunkify');//将多参数函数替换成单参数函数的转换器
 const colors = require('cli-color');//改变控制台输出文本的颜色、文本格式化。
@@ -139,7 +140,10 @@ program
 						name: '日常发布（相对路径构建，同时构建发布js、html）',
 						value: 'daily'
 					}, {
-						name: '线上发布（相对路径构建，同时构建发布js、html）',
+						name: '预发发布（绝对路径构建，同时构建发布js、html）',
+						value: 'pre'
+					}, {
+						name: '线上发布（相对路径构建，构建发布html）',
 						value: 'production'
 					}] //['本地生成部署配置', '日常环境', '预发环境', '线上环境']
 			}, {
@@ -156,6 +160,7 @@ program
 				deployJSON.version = configure.version; // Git分支版本
 				deployJSON.publish = configure.publish; // 发布配置信息
 				deployJSON.cdnhost = configure.cdnhost; // 静态资源cdn域名
+				deployJSON.oss = configure.oss; // oss信息
 
 
 				answers.selectedEntry.forEach(function(se, index) { // 生成发布列表，构建列表
@@ -191,10 +196,10 @@ program
 						console.log(colors.red('build.json写入失败，请检查该文件'));
 						console.log(colors.red(JSON.stringify(err)));
 					}
-
 					try {
-						console.log('gulp deploy --entry ' + filename + ' --env daily')
-						yield execThunk('gulp deploy --entry ' + filename + ' --env daily'); // 在本地进行build
+						console.log('gulp deploy --entry ' + filename + ' --env '+ data.env)
+						// yield execThunk('gulp deploy --entry ' + filename + ' --env daily'); // 在本地进行build
+						yield execThunk('gulp deploy --entry ' + filename + ' --env '+ data.env); // 执行gulp构建任务
 					} catch (e) {
 						console.log(colors.red('本地线上构建失败！'));
 						console.log(e);
@@ -208,57 +213,108 @@ program
 						}, function(code, output) {
 							var end777 = new Date().getTime();
 							console.log(colors.green('修改build权限777完成，共耗时:' + (end777 - start777) / 1000, 's'));
-							// chmod777();
+					
 						});
 					}
 
 					chmod777();
-					// callbackFn = function(userName) {
-					// 	if (userName) { // 校验用户名
-					// 		var serverType = '默认';
-					// 		var doPublish = function(confArr) {
-					// 			var scpStartTime = new Date().getTime();
-					// 			// exec('scp -r ./build root@101.200.132.102:/home', {
-					// 			// exec('scp -r ./build/ ' + userName + '@192.168.180.10:/opt/www/minions', {
-					// 			// 由于服务器端免密钥或交互式shell需要运维配合，开发成本较高，必所以暂时使用手工创建日常服务器项目目录的办法；
-					// 			// 日常发布时，须保证服务器上已经存在项目文件夹，否则需要手动新建，并将owner设置为www,权限777,否则可能会影响日常发布
-					// 			// console.log('scp -r ./build/* ' + userName + '@' + publishHost + ':' + publishPath + USERCONFIG.appName)
-					// 			var $path = confArr.path;
-					// 			confArr.host.forEach(function(host) {
-					// 				var scpCmd = 'scp -r ./deploy/build/* ' + userName + '@' + host + ':' + $path + USERCONFIG.appName
-					// 				console.log(scpCmd);
-					// 				exec(scpCmd, {
-					// 					async: true
-					// 				}, function(code, output) {
-					// 					var nowTime = new Date().getTime();
-					// 					console.log(colors.green('已成功上传到 [' + serverType + ']（' + host + '） 服务器!'));
-					// 					console.log(colors.blue('上传耗时:' + (nowTime - scpStartTime) / 1000, 's'));
-					// 				});
-					// 			});
-					// 		}
-					// 		try {
-					// 			if (data.env === 'daily') { // 发布日常
-					// 				serverType = '日常';
-					// 				doPublish(USERCONFIG.publish.daily)
-					// 			} else if (data.env === 'pre') { // 发布预发阿里云
-					// 				serverType = '预发';
-					// 				doPublish(USERCONFIG.publish.pre)
-					// 			} else if (data.env === 'production') { // 发布线上阿里云
-					// 				serverType = '线上';
-					// 				doPublish(USERCONFIG.publish.production);
-					// 			} else {
-					// 				colors.yellow('发布未成功，因为您没有指定正确的发布环境');
-					// 			}
-					// 		} catch (e) {
-					// 			console.log(colors.red('config.json发布配置错误，' + serverType + '发布失败'));
-					// 			console.log(colors.red(e));
-					// 		}
-					// 	} else {
-					// 		console.log(colors.red('上传失败，无法解析您输入的userName'));
-					// 	}
-					// }
-					// callbackFn(data.username);
-					// console.log(colors.green('构建完毕!'));
+					
+					var cdnPublish = function(_path,filedir){
+						var client = new OSS({
+							accessKeyId: data.oss.accessKeyId,
+							accessKeySecret: data.oss.accessKeySecret,
+							region: data.oss.region
+						  });
+						  
+						  co(function* () {
+							// put from local file
+							client.useBucket('yilantv');
+							
+							var result = yield client.put(_path, filedir);
+						  }).catch(function (err) {
+							console.log(err);
+						  });
+					}
+					//文件遍历方法
+					var fileDisplay = function (filePath){
+						//根据文件路径读取文件，返回文件列表
+						fs.readdir(filePath,function(err,files){
+							if(err){
+								console.warn(err)
+							}else{
+								//遍历读取到的文件列表
+								files.forEach(function(filename){
+									//获取当前文件的绝对路径
+									var filedir = path.join(filePath, filename);
+									//根据文件路径获取文件信息，返回一个fs.Stats对象
+									fs.stat(filedir,function(eror, stats){
+										if(eror){
+											console.warn('获取文件stats失败');
+										}else{
+											var isFile = stats.isFile();//是文件
+											var isDir = stats.isDirectory();//是文件夹
+											if(isFile && path.extname(filedir) == '.js'){
+												// console.log(filedir);
+												var _path = filedir.replace('deploy/javascripts/build/src/p','Transformers/'+data.appName)
+												// console.log(_path);
+												cdnPublish(_path,filedir)
+											}
+											if(isDir){
+												fileDisplay(filedir);//递归，如果是文件夹，就继续遍历该文件夹下面的文件
+											}
+										}
+									})
+								});
+							}
+						});
+					}
+					
+					callbackFn = function(userName) {
+						if (userName) { // 校验用户名
+							var serverType = '默认';
+
+							var doPublish = function(confArr) {
+								var scpStartTime = new Date().getTime();
+								var $path = confArr.path;
+								
+								confArr.host.forEach(function(host) {
+									// 'scp -r -P 5044 ./build root@47.93.14.55:/webroot/text'
+									var scpCmd = 'scp -r -P 5044 ./deploy/html/build/*  root@' + host + ':' + $path + USERCONFIG.appName
+									console.log(scpCmd);
+									exec(scpCmd, {
+										async: true
+									}, function(code, output) {
+										var nowTime = new Date().getTime();
+										console.log(colors.green('已成功上传到 [' + serverType + ']（' + host + '） 服务器!'));
+										console.log(colors.blue('上传耗时:' + (nowTime - scpStartTime) / 1000, 's'));
+									});
+								});
+							}
+							try {
+								if (data.env === 'daily') { // 发布日常
+									serverType = '日常';
+									// doPublish(USERCONFIG.publish.daily)
+								} else if (data.env === 'pre') { // 发布预发阿里云
+									serverType = '预发';
+									// console.log(USERCONFIG.publish.pre)
+									fileDisplay('./deploy/javascripts');
+									doPublish(USERCONFIG.publish.pre)
+								} else if (data.env === 'production') { // 发布线上阿里云
+									serverType = '线上';
+									// doPublish(USERCONFIG.publish.production);
+								} else {
+									colors.yellow('发布未成功，因为您没有指定正确的发布环境');
+								}
+							} catch (e) {
+								console.log(colors.red('config.json发布配置错误，' + serverType + '发布失败'));
+								console.log(colors.red(e));
+							}
+						} else {
+							console.log(colors.red('上传失败，无法解析您输入的userName'));
+						}
+					}
+					callbackFn(data.username);
+					console.log(colors.green('构建完毕!'));
 				});
 			});
 		});
