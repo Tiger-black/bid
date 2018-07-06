@@ -3,7 +3,7 @@
  * @Author: xiaohu 
  * @Date: 2018-06-21 12:00:35 
  * @Last Modified by: xiaohu.li
- * @Last Modified time: 2018-07-05 15:43:58
+ * @Last Modified time: 2018-07-06 14:15:32
  */
 
 require('shelljs/global');//nodejs中使用shelljs模块的exec方法执行shell脚本命令
@@ -207,7 +207,8 @@ program
 
 					var chmod777 = function(callback) {
 						var start777 = new Date().getTime();
-						exec('chmod -R 777 ./deploy', {
+						var dir = data.env === 'production'?'./build':'./deploy';
+						exec('chmod -R 777 '+dir, {
 							async: true,
 							silent: program.quiet
 						}, function(code, output) {
@@ -218,7 +219,7 @@ program
 					}
 
 					chmod777();
-					
+
 					var cdnPublish = function(_path,filedir){
 						var client = new OSS({
 							accessKeyId: data.oss.accessKeyId,
@@ -279,7 +280,8 @@ program
 								
 								confArr.host.forEach(function(host) {
 									// 'scp -r -P 5044 ./build root@47.93.14.55:/webroot/text'
-									var scpCmd = 'scp -r -P 5044 ./deploy/html/build/*  root@' + host + ':' + $path + USERCONFIG.appName
+									var dir = data.env === 'production'?'./build':'./deploy/html/build';
+									var scpCmd = 'scp -r -P 5044 '+dir+'/*  root@' + host + ':' + $path +'/'+ USERCONFIG.appName
 									console.log(scpCmd);
 									exec(scpCmd, {
 										async: true
@@ -296,12 +298,11 @@ program
 									// doPublish(USERCONFIG.publish.daily)
 								} else if (data.env === 'pre') { // 发布预发阿里云
 									serverType = '预发';
-									// console.log(USERCONFIG.publish.pre)
 									fileDisplay('./deploy/javascripts');
 									doPublish(USERCONFIG.publish.pre)
-								} else if (data.env === 'production') { // 发布线上阿里云
+								} else if (data.env === 'production') { // 发布线上服务器
 									serverType = '线上';
-									// doPublish(USERCONFIG.publish.production);
+									doPublish(USERCONFIG.publish.production);
 								} else {
 									colors.yellow('发布未成功，因为您没有指定正确的发布环境');
 								}

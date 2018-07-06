@@ -43,17 +43,17 @@ if (env === 'production' || env === 'production-build') {
 	buildConfig.htmlBuildPath = './build/';
 } else if (env === 'tag') {
 	//【仅构建和发布js文件】 由git hock触发，全量build发布构建js文件到线上,并且将使用cdn地址的html发布到预发环境
-	deployTask = ['init', 'clean', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];
+	deployTask = ['init', 'clean','cleanHtml', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];
 	buildConfig.jsBuildPath = './deploy/javascripts/build/';
 	buildConfig.htmlBuildPath = './deploy/html/build/';
 }  else if (env === 'pre') {
 	//预发发布时js和html分开
-	deployTask = ['init', 'clean', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];
+	deployTask = ['init', 'clean','cleanHtml', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];
 	buildConfig.jsBuildPath = './deploy/javascripts/build/';
 	buildConfig.htmlBuildPath = './deploy/html/build/';
 } else if (env === 'daily') {
 	//【构建全部html及js文件】 日常、预发构建 构建后js、html路径一致
-	deployTask = ['init', 'clean', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];;
+	deployTask = ['init', 'clean','cleanHtml', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];;
 	buildConfig.jsBuildPath = './deploy/build/';
 	buildConfig.htmlBuildPath = './deploy/build/';
 } else {
