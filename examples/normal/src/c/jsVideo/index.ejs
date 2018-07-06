@@ -1,0 +1,18 @@
+
+<%if(data){%>
+    <div class="video">
+        <div class="js-video">
+            <video 
+                data-id="dgjwrVwE0MV9"  
+                poster="<%= data.video.cover[0].replace(/^http[s]?:/,"")+'?x-oss-process=image/resize,w_500' %>"
+                playsinline
+                loop
+            >
+                <%  data.video.play_urls.forEach(function element(item,i){%>
+                    <source src="<%=item%>">
+                <%});%>
+            </video>
+            <i data-playPause class="playPause iconfont">&#xe60a;</i>
+        </div>
+    </div>
+<%}%>

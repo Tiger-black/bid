@@ -1,0 +1,33 @@
+/* 主色系 */
+.J_toast {
+  min-width: 4.53333333rem;
+  max-width: 6.66666667rem;
+  height: auto;
+  padding: 0 0.66666667rem;
+  position: fixed;
+  z-index: 9901;
+  left: 0;
+  right: 0;
+  margin: auto;
+  line-height: 0.37333333rem;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 0.18666667rem;
+  color: #fff;
+  text-align: center;
+  font-size: 0.37333333rem;
+  box-sizing: content-box;
+}
+.J_toast p {
+  display: inline-block;
+  max-width: 100%;
+}
+.J_toast_mask {
+  position: fixed;
+  z-index: 9900;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: rgba(0, 0, 0, 0);
+}

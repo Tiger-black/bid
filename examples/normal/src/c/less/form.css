@@ -1,0 +1,27 @@
+/* 主色系 */
+input[type="number"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="text"],
+button {
+  outline: none;
+}
+input[type="textarea"],
+button {
+  outline: none;
+}
+input[type="number"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="text"] {
+  display: inline-block;
+  border: none;
+  text-indent: 0.3rem;
+  font-size: 0.42666667rem;
+}

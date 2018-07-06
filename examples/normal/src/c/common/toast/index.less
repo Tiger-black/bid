@@ -1,0 +1,37 @@
+@import "../../less/variable";
+
+.J_toast {
+  min-width: 340/@rem;
+  max-width: 500/@rem;
+  height: auto;
+  padding: 0 50/@rem;
+  position: fixed;
+  z-index: 9901;
+  left: 0;
+  right: 0;
+  //top: 0;
+  //bottom: 0;
+  margin: auto;
+  line-height: 28/@rem;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 14/@rem;
+  color: #fff;
+  text-align: center;
+  font-size: 28/@rem;
+  box-sizing: content-box;
+  p {
+    display: inline-block;
+    max-width: 100%;
+  }
+}
+
+.J_toast_mask {
+  position: fixed;
+  z-index: 9900;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: rgba(0, 0, 0, 0);
+}
