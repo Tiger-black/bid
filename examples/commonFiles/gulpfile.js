@@ -1,4 +1,10 @@
 /**
+ * 
+ * @fileOverview gulp打包入口
+ * gulp tag --entry [path/build.json] --env production : 执行git tag时，自动发布js资源（不对html进行构建发布）到cdn
+ * gulp deploy --entry [path/build.json] --env [daily、pre、production] : 进行日常、预发及线上部署。线上部署时，只构建html（线上使用cdn发布js）。日常及预发部署时，js和html build到同一目录下。
+ * @author leo.yy
+ * 
  */
 var ARGS = process.argv.splice(2);
 var gulp = require('gulp');
@@ -37,17 +43,17 @@ if (env === 'production' || env === 'production-build') {
 	buildConfig.htmlBuildPath = './build/';
 } else if (env === 'tag') {
 	//【仅构建和发布js文件】 由git hock触发，全量build发布构建js文件到线上,并且将使用cdn地址的html发布到预发环境
-	deployTask = ['init', 'clean','cleanHtml', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];
+	deployTask = ['init', 'clean', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];
 	buildConfig.jsBuildPath = './deploy/javascripts/build/';
 	buildConfig.htmlBuildPath = './deploy/html/build/';
 }  else if (env === 'pre') {
 	//预发发布时js和html分开
-	deployTask = ['init', 'clean','cleanHtml', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];
+	deployTask = ['init', 'clean', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];
 	buildConfig.jsBuildPath = './deploy/javascripts/build/';
 	buildConfig.htmlBuildPath = './deploy/html/build/';
 } else if (env === 'daily') {
 	//【构建全部html及js文件】 日常、预发构建 构建后js、html路径一致
-	deployTask = ['init', 'clean','cleanHtml', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];;
+	deployTask = ['init', 'clean', 'lint', 'webpack-lint', 'minify-js-lint', 'buildLess', 'buildhtml'];;
 	buildConfig.jsBuildPath = './deploy/build/';
 	buildConfig.htmlBuildPath = './deploy/build/';
 } else {
