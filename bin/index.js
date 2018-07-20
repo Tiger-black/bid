@@ -3,7 +3,7 @@
  * @Author: xiaohu 
  * @Date: 2018-06-21 12:00:35 
  * @Last Modified by: xiaohu.li
- * @Last Modified time: 2018-07-06 14:15:32
+ * @Last Modified time: 2018-07-20 14:34:35
  */
 
 require('shelljs/global');//nodejs中使用shelljs模块的exec方法执行shell脚本命令
@@ -302,7 +302,7 @@ program
 									doPublish(USERCONFIG.publish.pre)
 								} else if (data.env === 'production') { // 发布线上服务器
 									serverType = '线上';
-									doPublish(USERCONFIG.publish.production);
+									// doPublish(USERCONFIG.publish.production);
 								} else {
 									colors.yellow('发布未成功，因为您没有指定正确的发布环境');
 								}
