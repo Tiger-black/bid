@@ -1,10 +1,4 @@
 /**
- * 
- * @fileOverview gulp打包入口
- * gulp tag --entry [path/build.json] --env production : 执行git tag时，自动发布js资源（不对html进行构建发布）到cdn
- * gulp deploy --entry [path/build.json] --env [daily、pre、production] : 进行日常、预发及线上部署。线上部署时，只构建html（线上使用cdn发布js）。日常及预发部署时，js和html build到同一目录下。
- * @author leo.yy
- * 
  */
 var ARGS = process.argv.splice(2);
 var gulp = require('gulp');
@@ -39,7 +33,7 @@ var deployTask = []; // gulp 任务序列
 
 if (env === 'production' || env === 'production-build') {
 	//【仅构建和发布html】或【仅进行线上构建不发布】 线上构建，由于线上使用cdn，需要剥离html和js,发布线上
-	deployTask = ['init','cleanHtml', 'buildLess', 'buildhtml'];
+	deployTask = ['init', 'buildLess', 'buildhtml'];
 	buildConfig.htmlBuildPath = './build/';
 } else if (env === 'tag') {
 	//【仅构建和发布js文件】 由git hock触发，全量build发布构建js文件到线上,并且将使用cdn地址的html发布到预发环境
