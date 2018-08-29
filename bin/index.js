@@ -3,7 +3,7 @@
  * @Author: xiaohu 
  * @Date: 2018-06-21 12:00:35 
  * @Last Modified by: xiaohu.li
- * @Last Modified time: 2018-07-20 14:34:35
+ * @Last Modified time: 2018-08-29 14:36:35
  */
 
 require('shelljs/global');//nodejs中使用shelljs模块的exec方法执行shell脚本命令
@@ -133,13 +133,15 @@ program
 				type: 'list',
 				name: 'env',
 				message: '请选择发布环境:',
-				choices: [{
-						name: '本地构建（相对路径构建，同时构建发布js、html）',
-						value: 'dev'
-					},{
-						name: '日常发布（相对路径构建，同时构建发布js、html）',
-						value: 'daily'
-					}, {
+				choices: [
+					// {
+					// 	name: '本地构建（相对路径构建，同时构建发布js、html）',
+					// 	value: 'dev'
+					// },{
+					// 	name: '日常发布（相对路径构建，同时构建发布js、html）',
+					// 	value: 'daily'
+					// }, 
+					{
 						name: '预发发布（绝对路径构建，同时构建发布js、html）',
 						value: 'pre'
 					}, {
